@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin Wheel</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+      color: #ffd700;
+    }
+
+    .wheel-container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid #ffd700;
+      background: conic-gradient(
+        #ff6b6b 0deg 60deg,
+        #6bc6ff 60deg 120deg,
+        #ffd36b 120deg 180deg,
+        #a1ff6b 180deg 240deg,
+        #d76bff 240deg 300deg,
+        #ff6ba1 300deg 360deg
+      );
+      position: relative;
+      transform: rotate(0deg);
+      transition: transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    }
+
+    .pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 60px;
+      background-color: #ffd700;
+      clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    }
+
+    .button {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #ffd700;
+      color: black;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #e6c200;
+    }
+
+    /* Overlay styles */
+    .winner-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 80%;
+      background-color: black;
+      border: 5px solid #ffd700;
+      color: #ffd700;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 20px;
+      z-index: 100;
+      display: none; /* Hidden initially */
+    }
+
+    .winner-overlay h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .winner-overlay button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #ffd700;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .winner-overlay button:hover {
+      background-color: #e6c200;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel"></div>
+  </div>
+  <div class="button">
+    <button id="spinButton">Spin</button>
+  </div>
+
+  <!-- Winner Overlay -->
+  <div class="winner-overlay" id="winnerOverlay">
+    <h1 id="winnerName"></h1>
+    <button id="wishes" class="wisher">Wishes!</button>
+    <button id="closeOverlay">Close</button>
+  </div>
+
+  <script>
+    const wheel = document.getElementById("wheel");
+    const spinButton = document.getElementById("spinButton");
+    const winnerOverlay = document.getElementById("winnerOverlay");
+    const winnerName = document.getElementById("winnerName");
+    const closeOverlay = document.getElementById("closeOverlay");
+
+    const options = ["Bhawesh", "Prabin", "Ajay", "Anit", "Madan", "Jiwan"];
+
+    let winner; // Declare winner globally
+
+    spinButton.addEventListener("click", () => {
+        const randomRotation = Math.floor(Math.random() * 360) + 720; // At least 2 full rotations
+        wheel.style.transform = `rotate(${randomRotation}deg)`;
+
+        const selectedOptionIndex = Math.floor(((randomRotation % 360) / 60));
+        winner = options[selectedOptionIndex]; // Assign value to global winner
+
+        setTimeout(() => {
+            // Show the winner overlay
+            winnerName.textContent = `${winner} wants to wish you, sir!!!`;
+            winnerOverlay.style.display = "flex";
+        }, 5000); // Delay until spin animation ends
+    });
+
+    closeOverlay.addEventListener("click", () => {
+        winnerOverlay.style.display = "none";
+    });
+
+    const wishes = document.querySelector('.wisher');
+    wishes.addEventListener('click', () => {
+        if (winner) {
+            window.open(`/Sant_Sir/${winner}.html`);
+        } else {
+            alert("Please spin the wheel first!");
+        }
+    });
+</script>
+
+</body>
+</html>
